@@ -19,22 +19,19 @@ Post request json file structure
 
 
 const registerUser = async (req, res) => {
-    const { name, email, password } = req.body;
     try {
-      // Check if user with same email already exists
-      const userExists = await User.findOne({ email });
-      if (userExists) {
-        return res.status(404).json({ error: "User with this email already exists" });
-      }
-  
-      // Create new user
+      const { name, email, password } = req.body;
       const user = new User({ name, email, password });
-      const savedUser = await user.save();
-      res.json({ id: savedUser._id });
+      await user.save();
+      res.status(200).json({ _id: user._id });
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: "Internal Server Error" });
+      if (err.name === 'MongoError' && err.code === 11000) {
+        // Duplicate email error
+        res.status(404).json({ error: 'User validation failed: email: Email already exists' });
+      } else {
+        res.status(404).json({ error: err.message });
+      }
     }
   };
-  
-  module.exports = { registerUser };
+
+module.exports = { registerUser };
