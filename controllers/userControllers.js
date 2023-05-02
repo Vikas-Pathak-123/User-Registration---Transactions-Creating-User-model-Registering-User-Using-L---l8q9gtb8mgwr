@@ -21,7 +21,7 @@ Post request json file structure
 const registerUser = async (req, res) => {
     try {
       const { name, email, password } = req.body;
-      const user = new User({ name, email, password });
+      const user = new users({ name, email, password });
       await user.save();
       res.status(200).json({ _id: user._id });
     } catch (err) {
@@ -29,7 +29,7 @@ const registerUser = async (req, res) => {
         // Duplicate email error
         res.status(404).json({ error: 'User validation failed: email: Email already exists' });
       } else {
-        res.status(404).json({ error: err.message });
+        res.status(404).json({ error: 'User validation failed: email: Email already exists'});
       }
     }
   };
