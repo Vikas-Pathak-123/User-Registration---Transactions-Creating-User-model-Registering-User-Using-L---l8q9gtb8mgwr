@@ -21,7 +21,7 @@ const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
     const user = new users({ name, email, password });
     await user.save();
-    res.status(200).send({_id: user._id});
+    res.status(200).send(user._id);
   } catch (error) {
     if (error.name === "MongoError" && error.code === 11000) {
       res
